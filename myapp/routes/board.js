@@ -25,7 +25,7 @@ router.get('/', function(req, res, next) {
 
   var query = connection.query('SELECT idx, title, writer, hit, DATE_FORMAT(moddate, "%Y/%m%d %T") AS moddate FROM topic', function(err, rows){
     if(err) console.log(err);
-    console.log('rows :' + rows);
+    console.log(rows);
     res.render('list', {title:'Board List', rows: rows});
   });
 });

@@ -13,8 +13,8 @@ html
           th 글쓴이
           th 조회수
           th 수정일
-        tr
-        - for (var i = 0; i < rows; ++i) {
+        - for (var i = 0; i < rows.length; ++i) {
+          tr
             td #{rows[i].idx}
             td #{rows[i].title}
             td #{rows[i].writer}
