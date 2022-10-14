@@ -1,0 +1,33 @@
+doctype html
+html
+  head
+    title=title 
+    link(rel='stylesheet' href='/stylesheets/style.css')
+
+    - var read = rows[0];
+  body
+    h1=title 
+    table(border='2')
+      tbody
+        tr
+          th 번호
+          td #{read.idx}
+          th 조회수
+          td #{read.hit}
+          th 글쓴이
+          td #{read.writer}
+        tr 
+          th 제목
+          td(colspan='5') #{read.title}
+        tr
+          th 작성일
+          td(colspan='2') #{read.regdate}
+          th 수정일
+          td(colspan='2') #{read.moddate}
+        tr
+          td(colspan='6' height='400') #{read.content} 
+        tr
+          td(colspan='6')
+            #[a(href="/board/list")] 목록
+        
+

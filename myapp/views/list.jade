@@ -16,7 +16,7 @@ html
         - for (var i = 0; i < rows.length; ++i) {
           tr
             td #{rows[i].idx}
-            td #{rows[i].title}
+            td #[a(href="/board/read/#{rows[i].idx}") #{rows[i].title}]
             td #{rows[i].writer}
             td #{rows[i].hit}
             td #{rows[i].moddate}

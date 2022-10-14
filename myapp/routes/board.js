@@ -30,4 +30,37 @@ router.get('/', function(req, res, next) {
   });
 });
 
+router.get('/read/:idx', function(req, res, next){
+  var idx = req.params.idx;
+  console.log("idx: " + idx);
+
+  connection.beginTransaction(function(err){
+    if(err) console.log(err);
+    connection.query('UPDATE topic SET hit=hit + 1 WHERE idx=?', [idx], function(err){
+      if(err) {
+        console.log(err);
+        connection.rollback(function() {
+          console.error('rollback error1');
+        })
+      }
+      connection.query('SELECT idx, title, content, writer, hit, DATE_FORMAT(moddate, "%Y%m%d %T")' + 
+      'AS moddate, DATE_FORMAT(regdate, "%Y%m%d %T") AS regdate FROM topic WHERE idx=?', [idx], function(err, rows){
+        if(err) {
+          console.log(err);
+          connection.rollback(function(){
+            console.error('rollback2');
+          })
+        }
+        else {
+          connection.commit(function (err) {
+            if(err) console.log(err);
+            console.log("rows" + rows);
+            res.render("read", {title:rows[0].title, rows : rows})
+          })
+        }
+      })
+    })
+  })
+})
+
 module.exports = router;
