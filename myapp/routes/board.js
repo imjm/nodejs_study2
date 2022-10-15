@@ -23,7 +23,7 @@ router.get('/list', function(req, res, next) {
 
 router.get('/', function(req, res, next) {
 
-  var query = connection.query('SELECT idx, title, writer, hit, DATE_FORMAT(moddate, "%Y/%m%d %T") AS moddate FROM topic', function(err, rows){
+  var query = connection.query('SELECT idx, title, writer, hit, DATE_FORMAT(moddate, "%Y/%m/%d %T") AS moddate FROM topic', function(err, rows){
     if(err) console.log(err);
     console.log(rows);
     res.render('list', {title:'Board List', rows: rows});
@@ -43,8 +43,8 @@ router.get('/read/:idx', function(req, res, next){
           console.error('rollback error1');
         })
       }
-      connection.query('SELECT idx, title, content, writer, hit, DATE_FORMAT(moddate, "%Y%m%d %T")' + 
-      'AS moddate, DATE_FORMAT(regdate, "%Y%m%d %T") AS regdate FROM topic WHERE idx=?', [idx], function(err, rows){
+      connection.query('SELECT idx, title, content, writer, hit, DATE_FORMAT(moddate, "%Y/%m/%d %T")' + 
+      'AS moddate, DATE_FORMAT(regdate, "%Y/%m/%d %T") AS regdate FROM topic WHERE idx=?', [idx], function(err, rows){
         if(err) {
           console.log(err);
           connection.rollback(function(){
@@ -54,12 +54,52 @@ router.get('/read/:idx', function(req, res, next){
         else {
           connection.commit(function (err) {
             if(err) console.log(err);
-            console.log("rows" + rows);
+            console.log(rows);
             res.render("read", {title:rows[0].title, rows : rows})
           })
         }
       })
     })
+  })
+})
+
+router.get('/write', function(req, res, next) {
+  res.render('write', {title: '글 쓰기 페이지'});
+})
+
+router.post('/write', function(req, res, next) {
+  var body = req.body;
+  var writer = body.writer;
+  var title = body.title;
+  var content = body.content;
+  var password = body.password;
+
+  connection.beginTransaction(function(err){
+    if(err) console.log(err);
+    connection.query('INSERT INTO topic(title, writer, content, password) VALUES(?, ?, ?, ?)', 
+      [title, writer, content, password], function(err){
+        if(err) {
+          console.log(err);
+          connection.rollback(function(){
+            console.log('rollback error1');
+          })
+        }
+        connection.query('SELECT LAST_INSERT_ID() AS idx', function(err, rows){
+          if(err){
+            console.log(err);
+            connection.rollback(function(){
+              console.log('rollback error2');
+            })
+          } else {
+            connection.commit(function (err){
+              if(err) console.log(err);
+              console.log(rows);
+              var idx = rows[0].idx;
+              res.redirect('/board/read/'+idx);
+            })
+          }
+        })
+      })
   })
 })
 
