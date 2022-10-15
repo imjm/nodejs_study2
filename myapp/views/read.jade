@@ -28,6 +28,8 @@ html
           td(colspan='6' height='400') #{read.content} 
         tr
           td(colspan='6')
-            #[a(href="/board/list") 목록]
+            div #[a(href="/board") 목록]
+            form(action="/board/delete_process" method='post')
+              input(type='submit' value='삭제') 
         
 

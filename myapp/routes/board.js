@@ -17,13 +17,10 @@ var connection = mysql.createConnection( {    //연결을 만들어줌
 
 /* GET home page. */
 
-router.get('/list', function(req, res, next) {
-    res.redirect('/board/1');
-  });
 
 router.get('/', function(req, res, next) {
 
-  var query = connection.query('SELECT idx, title, writer, hit, DATE_FORMAT(moddate, "%Y/%m/%d %T") AS moddate FROM topic', function(err, rows){
+  var query = connection.query('SELECT idx, title, writer, hit, DATE_FORMAT(moddate, "%Y/%m/%d %T") AS moddate FROM topic ORDER BY idx desc', function(err, rows){
     if(err) console.log(err);
     console.log(rows);
     res.render('list', {title:'Board List', rows: rows});
@@ -100,6 +97,14 @@ router.post('/write', function(req, res, next) {
           }
         })
       })
+  })
+})
+
+router.post('/delete_process', function(req, res, next) {
+  var idx = req.params.idx;
+  connection.query('DELETE FROM topic WHERE idx=?',[idx], function(err){
+    if(err) console.log(err);
+    res.redirect('/board');
   })
 })
 
