@@ -29,7 +29,7 @@ html
         tr
           td(colspan='6')
             div #[a(href="/board") 목록]
-            form(action="/board/delete_process" method='post')
+            form(action="/board/delete/#{read.idx}" method='post')
               input(type='submit' value='삭제') 
         
 

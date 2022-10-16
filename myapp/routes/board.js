@@ -52,7 +52,7 @@ router.get('/read/:idx', function(req, res, next){
           connection.commit(function (err) {
             if(err) console.log(err);
             console.log(rows);
-            res.render("read", {title:rows[0].title, rows : rows})
+            res.render("read", {title:rows[0].title, rows : rows});
           })
         }
       })
@@ -100,8 +100,9 @@ router.post('/write', function(req, res, next) {
   })
 })
 
-router.post('/delete_process', function(req, res, next) {
+router.post('/delete/:idx', function(req, res, next) {
   var idx = req.params.idx;
+  
   connection.query('DELETE FROM topic WHERE idx=?',[idx], function(err){
     if(err) console.log(err);
     res.redirect('/board');
