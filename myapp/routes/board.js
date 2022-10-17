@@ -105,7 +105,7 @@ router.post('/delete/:idx', function(req, res, next) {
   var password = req.body.password;
   connection.query('DELETE FROM topic WHERE idx=? AND password=?',[idx, password], function(err,result){
     if(err) console.log(err);
-    if(result[0].idx) {
+    if(result.idx) {
       res.redirect('/board');
     } else {
       res.send("<script>alert('비밀번호가 틀렸습니다.');</script>");
