@@ -105,11 +105,10 @@ router.post('/delete/:idx', function(req, res, next) {
   
   connection.query('DELETE FROM topic WHERE idx=?',[idx], function(err){
     if(err) console.log(err);
-    if(result[0].idx) {
-      res.redirect('/board');
+    if(result.affectedRow == 0) {
+      res.send("<script>alert('비밀번호가 틀렸습니다.');history.back();</script>");
     } else {
-      res.send("<script>alert('비밀번호가 틀렸습니다.');</script>");
-      return res.redirect('/read/:idx');
+      res.redirect('/board');
     }
     
   })
