@@ -105,13 +105,17 @@ router.post('/delete/:idx', function(req, res, next) {
   
   connection.query('DELETE FROM topic WHERE idx=?',[idx], function(err){
     if(err) console.log(err);
-    if(result.affectedRow == 0) {
-      res.send("<script>alert('비밀번호가 틀렸습니다.');history.back();</script>");
-    } else {
+    if(result.affectedRows == 1) {
       res.redirect('/board');
+    } else {
+      res.send("<script>alert('패스워드가 일치하지 않습니다.');history.back();</script>");
     }
     
   })
+})
+
+router.get('/update', function(req, res, next) {
+  res.render('update', {title: '글 수정 페이지'});
 })
 
 module.exports = router;
