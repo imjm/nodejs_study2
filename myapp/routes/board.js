@@ -20,7 +20,7 @@ var connection = mysql.createConnection( {    //연결을 만들어줌
 
 router.get('/', function(req, res, next) {
 
-  var query = connection.query('SELECT idx, title, writer, hit, DATE_FORMAT(moddate, "%Y/%m/%d %T") AS moddate FROM topic ORDER BY idx desc', function(err, rows){
+    connection.query('SELECT idx, title, writer, hit, DATE_FORMAT(moddate, "%Y/%m/%d %T") AS moddate FROM topic ORDER BY idx desc', function(err, rows){
     if(err) console.log(err);
     console.log(rows);
     res.render('list', {title:'Board List', rows: rows});
@@ -115,7 +115,46 @@ router.post('/delete/:idx', function(req, res, next) {
 })
 
 router.get('/update', function(req, res, next) {
-  res.render('update', {title: '글 수정 페이지'});
+  connection.query('SELECT idx, title, writer, content FROM topic ORDER BY idx desc', function(err, rows){
+    if(err) console.log(err);
+    console.log(rows);
+    res.render('update', {title: '글 수정 페이지', rows: rows});
+  });
+})
+
+router.post('/update/:idx', function(req, res, nect){
+  var body = req.body;
+  var content = body.content;
+  var idx = req.params.idx;
+
+  connection.beginTransaction(function(err){
+    if(err) console.log(err);
+    connection.query('UPDATE topic SET content = ? WHERE idx = ?', [content, idx], function(err){
+      if(err) {
+        console.log(err);
+        connection.rollback(function() {
+          console.error('rollback error1');
+        })
+      }
+      connection.query('SELECT idx, title, content, writer, hit, DATE_FORMAT(moddate, "%Y/%m/%d %T")' + 
+      'AS moddate, DATE_FORMAT(regdate, "%Y/%m/%d %T") AS regdate FROM topic WHERE idx=?', [idx], function(err, rows){
+        if(err) {
+          console.log(err);
+          connection.rollback(function(){
+            console.error('rollback2');
+          })
+        }
+        else {
+          connection.commit(function (err){
+            if(err) console.log(err);
+            console.log(rows);
+            var idx = rows[0].idx;
+            res.redirect('/board/read/'+idx);
+          })
+        }
+      })
+  })
+})
 })
 
 module.exports = router;

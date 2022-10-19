@@ -3,31 +3,28 @@ html(xmlns='https://www.w3.org/1999/html')
   head
     title=title 
     link(rel='stylesheet' href='/stylesheets/style.css')
+    - var read = rows[0]
     script(src='https://code.jquery.com/jquery-2.2.4.min.js')
   body
     h1=title 
-    form(method='post' action='/board/write' onsubmit='onWriteSubmit()') 
+    form(method='post' action='/board/update/#{read.idx}' onsubmit='onWriteSubmit()') 
       table(border='2')
         tbody
             tr
-            th 제목
-            td 
-                input(type="text" name="title" id="title" required)
-            tr
-            th 글쓴이
-            td 
-                input(type="text" name="writer" id="writer" required)
+              th 번호
+              td #{read.idx}
+              th 글쓴이
+              td #{read.writer}
             tr 
-            th 비밀번호
-            td 
-                input(type="password" name="password" id="password" required) 
+              th 제목
+              td(colspan='5') #{read.title}
             tr
             th 내용
             td 
-                textarea(cols='50' role='12' name='content' id='content' required)
+              textarea(cols='50' role='12' name='content' id='content' required) #{read.content}
             tr 
             td(colspan='2') 
-                input(type='submit' value='등록')
+                input(type='submit' value='수정')
     script.
         function onWriteSubmit()
         {
