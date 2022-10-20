@@ -126,6 +126,7 @@ router.post('/update/:idx', function(req, res, nect){
   var body = req.body;
   var content = body.content;
   var idx = req.params.idx;
+  var password = req.body.password;
 
   connection.beginTransaction(function(err){
     if(err) console.log(err);
@@ -137,7 +138,7 @@ router.post('/update/:idx', function(req, res, nect){
         })
       }
       connection.query('SELECT idx, title, content, writer, hit, DATE_FORMAT(moddate, "%Y/%m/%d %T")' + 
-      'AS moddate, DATE_FORMAT(regdate, "%Y/%m/%d %T") AS regdate FROM topic WHERE idx=?', [idx], function(err, rows){
+      'AS moddate, DATE_FORMAT(regdate, "%Y/%m/%d %T") AS regdate FROM topic WHERE idx=?', [idx], function(err, result, rows){
         if(err) {
           console.log(err);
           connection.rollback(function(){
@@ -149,7 +150,11 @@ router.post('/update/:idx', function(req, res, nect){
             if(err) console.log(err);
             console.log(rows);
             var idx = rows[0].idx;
+            if(result.affectedRows == 1){
             res.redirect('/board/read/'+idx);
+            } else {
+              res.send("<script>alert('패스워드가 일치하지 않습니다.');history.back();</script>");
+            }
           })
         }
       })
