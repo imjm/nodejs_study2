@@ -114,7 +114,7 @@ router.post('/delete/:idx', function(req, res, next) {
   })
 })
 
-router.get('/update', function(req, res, next) {
+router.post('/update', function(req, res, next) {
   connection.query('SELECT idx, title, writer, content FROM topic ORDER BY idx desc', function(err, rows){
     if(err) console.log(err);
     console.log(rows);
@@ -130,6 +130,7 @@ router.post('/update/:idx', function(req, res, nect){
 
   connection.beginTransaction(function(err){
     if(err) console.log(err);
+
     connection.query('UPDATE topic SET content = ? WHERE idx = ?', [content, idx], function(err){
       if(err) {
         console.log(err);
@@ -150,11 +151,12 @@ router.post('/update/:idx', function(req, res, nect){
             if(err) console.log(err);
             console.log(rows);
             var idx = rows[0].idx;
-            if(result.affectedRows == 1){
-            res.redirect('/board/read/'+idx);
-            } else {
-              res.send("<script>alert('패스워드가 일치하지 않습니다.');history.back();</script>");
-            }
+            // if(result.affectedRows == 1) {
+            //   res.redirect('/board/read/'+idx);
+            // } else {
+            //   res.send("<script>alert('패스워드가 일치하지 않습니다.');history.back();</script>");
+            // }
+            res.redirect('/board/read' + idx);
           })
         }
       })
