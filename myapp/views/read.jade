@@ -29,10 +29,10 @@ html
         tr
           td(colspan='6')
             #[a(href="/board") 목록]&nbsp;&nbsp;&nbsp;
-            #[a(href="/board/update") 수정]
-            form(action="/board/delete/#{read.idx}" method='post')
+            form(method='post')
                input(type="password" name="password" id="password" required) 
-               input(type='submit' value='삭제') 
+               input(type='submit' formaction="/board/update" value='수정')
+               input(type='submit' formaction="/board/delete/#{read.idx}" value='삭제') 
 
         
 
